@@ -1,148 +1,84 @@
----
-id: roles-overview
-title: Overview Roles
-sidebar_label: Overview Roles
----
+## 🔐 Overview - Sistem Role & Permission
 
-# Overview: Fitur User Roles & Permissions
+Sistem **Role & Permission** adalah pondasi penting dalam aplikasi untuk mengatur siapa yang boleh mengakses fitur apa. Dengan sistem ini, aplikasi menjadi:
 
-Sistem **User Roles & Permissions** adalah pondasi utama dalam kontrol akses (access control) aplikasi HIMTIKA.
-
-Setiap pengguna bisa memiliki satu atau lebih **Role**, dan setiap Role berisi kumpulan **Permission**.  
-Dengan sistem ini, kita bisa mengatur:
-
-- **Siapa** saja yang dapat mengakses fitur tertentu.
-- **Level aksi** yang diizinkan (lihat, tambah, ubah, hapus).
-
+* ✅ Lebih aman (hanya role tertentu bisa akses fitur tertentu)
+* ✅ Lebih fleksibel (fitur baru tinggal ditambahkan permission-nya)
+* ✅ Lebih scalable (tidak perlu if-else panjang untuk pengecekan role)
 
 ---
 
-## 🎯 Tujuan Sistem Roles
+### 🎯 Tujuan Dokumentasi Ini
 
-| Tujuan | Penjelasan |
-|---------|------------|
-| **Otorisasi Terpusat** | Semua kontrol hak akses disimpan dalam satu sistem terpusat (bukan di masing-masing fitur). |
-| **Pengelolaan Hak Akses Dinamis** | Admin bisa menambah/cabut role dan permission tanpa perlu ubah kode fitur lain. |
-| **Scalable** | Fitur baru cukup mendaftarkan permission baru dan assign ke role yang sesuai. |
-| **Modular & Reusable** | Fitur lain tinggal panggil service roles, tidak perlu tahu detail implementasi. |
+Dokumentasi ini disusun untuk membantu developer memahami dan menggunakan sistem Role & Permission dengan:
 
----
-
-## 🗄️ Struktur Tabel di Supabase
-
-| Tabel              | Deskripsi                                                                 |
-| ----------------- | --------------------------------------------------------------------------|
-| `roles`            | Daftar role seperti Kahim, RnD, Edukasi, Mahasiswa                        |
-| `permissions`      | Hak akses granular: fitur + aksi (misal: `hicode:add`)                    |
-| `role_permissions` | Relasi **banyak-ke-banyak** antara role dan permission                     |
-| `user_roles`       | Relasi **banyak-ke-banyak** antara user dan role                           |
+* Penjelasan struktur database
+* Penjabaran entity, model, usecase, repository, controller
+* Contoh integrasi ke fitur lain
+* Troubleshooting masalah umum
 
 ---
 
-## ⚙️ Struktur Folder Kode
+### 🏗️ Arsitektur yang Digunakan
 
-Struktur kode mengikuti **Clean Architecture dengan penyesuaian pragmatis**:
+Kami menerapkan **Clean Architecture** yang memisahkan domain, data, dan presentation layer. Fokus utama sistem Role & Permission ada pada:
 
-```plaintext
-features/roles/
-├── data/
-│   ├── datasources/          <-- koneksi ke Supabase (CRUD, RPC)
-│   ├── models/               <-- representasi data Supabase (DTO)
-│   ├── repositories/         <-- implementasi RolesRepository (pakai mapper)
-│   └── mappers/              <-- konversi Model <-> Entity
-├── domain/
-│   ├── entities/             <-- definisi Role, Permission, UserRole (Entity)
-│   ├── repositories/         <-- abstract RolesRepository (interface)
-│   └── usecases/             <-- business logic: assign, revoke, get permission
-├── presentation/
-│   └── bloc/                 <-- state management (Bloc untuk Admin Panel)
-├── application/
-│   └── roles_controller.dart <-- helper untuk fitur lain agar cek hak akses mudah
+* `domain/` : Entity dan Usecase
+* `data/` : Model, Mapper, Repository Implementation, RemoteDatasource
+* `application/` : Controller
 
 ---
 
-## 🧠 Konsep Penting
+### 🛢️ Mengapa Supabase?
 
-### Multi-Role Support
-- 1 user bisa punya **lebih dari 1 role**.  
-- Semua permission role tersebut akan **digabungkan** menjadi hak akses user.
+Supabase digunakan sebagai penyedia backend karena:
 
----
-
-### Mapper: Model ↔️ Entity
-Agar data tetap bersih dan mengikuti Domain-Driven Design (DDD):
-
-|            |                                                                        |
-| ---------- | ---------------------------------------------------------------------- |
-| **Model**  | Representasi langsung dari data Supabase (DTO / data transfer object). |
-| **Entity** | Struktur murni untuk logika aplikasi (tanpa tergantung database).      |
-| **Mapper** | Jembatan yang mengubah Model ↔️ Entity. (Tersimpan di `data/mappers/`) |
+* 🔌 Mendukung RPC (Remote Procedure Call)
+* 🔐 Mendukung autentikasi & otorisasi native
+* 💡 Sangat cocok untuk sistem dengan relasi antar tabel seperti role-permission
 
 ---
 
-### RolesController (Helper untuk Fitur Lain)
-Fitur lain (Forum, Kalender, dsb) tidak perlu tahu detail roles.
-Cukup pakai RolesController untuk cek hak akses:
+### ⚖️ Perbandingan: Tanpa vs Dengan Sistem Role
+
+| Aspek                 | Tanpa Role-Permission                    | Dengan Role-Permission           |
+| --------------------- | ---------------------------------------- | -------------------------------- |
+| Hak akses             | Dihardcode di UI / backend               | Dikonfigurasi via tabel Supabase |
+| Penambahan fitur baru | Perlu update manual pengecekan role      | Cukup tambah permission baru     |
+| UI Dinamis            | Sulit toggle fitur berdasarkan hak akses | Bisa validasi button, menu, dll  |
+
+---
+
+### 🔄 Skema Akses
+
+```
+user_id -> user_roles -> roles -> role_permissions -> permissions
+```
+
+Setiap fitur seperti:
+
+* `'news.edit'`
+* `'dashboard.view'`
+
+...akan didaftarkan sebagai permission di Supabase, lalu diberikan ke role tertentu.
+
+---
+
+### 📦 Contoh Kode Penggunaan
 
 ```dart
-final rolesController = RolesController(getUserPermissions);
-
-if (await rolesController.can(userId, 'forum', 'edit')) {
-   // izinkan edit post
+final canEdit = await rolesController.can(userId, 'news', 'edit');
+if (canEdit) {
+  showEditButton();
 }
+```
+
+Fitur lain pun cukup memakai controller ini tanpa tahu bagaimana database atau repository bekerja.
 
 ---
 
-## 🔑 Contoh Kasus Akses
+### 📚 Lanjutkan ke:
 
-| Role      | Fitur        | Aksi yang Diizinkan           |
-| --------- | ------------ | ----------------------------- |
-| Mahasiswa | Hicode       | Lihat                         |
-| Edukasi   | Hicode       | Lihat, Tambah, Ubah, Hapus    |
-| Kahim     | Kelola Roles | Tambah, Cabut Role            |
-| RnD       | Semua Fitur  | Akses Developer (Full Access) |
-
----
-
-## 🔄 Flow Hak Akses (Diagram)
-
-```mermaid
-flowchart TD
-    User -- punya --> Role
-    Role -- punya --> Permission
-    Fitur -- cek --> RolesController
-    RolesController --> GetUserPermissionsUseCase
-    GetUserPermissionsUseCase --> RolesRepository
-    RolesRepository --> Supabase (via datasource)
-
----
-## 🚀 Penggunaan di Fitur Lain
-Fitur lain cukup panggil RolesController:
-
-```dart
-final canDelete = await rolesController.can(
-  userId,
-  'forum', 
-  'delete',
-);
-
-if (canDelete) {
-   // tampilkan tombol hapus post
-}
-
----
-
-## ❓ FAQ (Pertanyaan yang Sering Ditanyakan)
-
-| Pertanyaan                                            | Jawaban                                                                    |
-| ----------------------------------------------------- | -------------------------------------------------------------------------- |
-| **Apakah bisa assign banyak role ke 1 user?**         | Bisa. Sistem mendukung multi-role.                                         |
-| **Apakah fitur lain harus implementasi roles ulang?** | Tidak perlu. Cukup pakai `RolesController`.                                |
-| **Kenapa pakai mapper?**                              | Agar memisahkan antara data Supabase (Model) dan logika aplikasi (Entity). |
-
----
-
-## 📝 Catatan untuk Developer HIMTIKA Berikutnya
-- Semua fitur baru yang butuh hak akses, wajib mendaftarkan permission baru di Supabase.
-- Jangan langsung pakai query select role/permission di fitur lain. Selalu lewat RolesController.
-- Dokumentasi ini akan terus berkembang seiring bertambahnya fitur.
+* [`database-schema.md`](./database-schema.md) untuk melihat struktur tabel
+* [`entity-and-models.md`](./entity-and-models.md) untuk tahu perbedaan Permission & RolePermission
+* [`integration-guide.md`](./integration-guide.md) jika ingin langsung coba di UI
