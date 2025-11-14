@@ -1,76 +1,34 @@
 ---
 id: introduction
-title: Pengenalan
-sidebar_label: Pengenalan
+title: Selamat Datang di HIMFO
+sidebar_label: 🚀 Pengenalan
 ---
 
-# Pengenalan HIMTIKA Mobile
+# Selamat Datang di Dokumentasi HIMFO
 
-Dokumentasi ini menyajikan arsitektur, penjelasan fitur, dan panduan integrasi berbagai komponen aplikasi mobile HIMTIKA.
+HIMFO adalah aplikasi *mobile* resmi Himpunan Mahasiswa Teknik Informatika (HIMTIKA) Unsika.
 
-Dokumentasi ini akan berkembang seiring fitur-fitur aplikasi dikembangkan, dimulai dari fondasi utama: **User Roles System**.
+## 🎯 Tujuan Dokumentasi
 
----
+Dokumentasi ini adalah **buku panduan lengkap** untuk serah terima proyek HIMFO ke generasi pengurus berikutnya.
 
-## Bahasa
+Dokumentasi ini sengaja dibuat sangat rinci dan ditujukan untuk **developer pemula**. Kami akan menjelaskan semua konsep dari nol, seakan-akan Anda belum pernah menggunakan teknologi yang kami pakai.
 
-- **Penjelasan dokumentasi:** Bahasa Indonesia
-- **Penamaan kode, database, dan file:** Bahasa Inggris (sesuai standar industri)
+## STACK (Tumpukan Teknologi)
 
----
+Aplikasi ini dibangun menggunakan 3 teknologi utama:
 
-## Arsitektur Umum Aplikasi
+1.  **Flutter (Frontend):**
+    * **Apa itu?** *Toolkit* dari Google untuk membuat tampilan aplikasi (UI) Android dan iOS dari satu basis kode.
+    * [cite_start]**Pola Arsitektur:** Kita menggunakan **Clean Architecture** dan **BLoC** untuk manajemen *state* (data)[cite: 285, 287]. Ini adalah standar industri yang membuat kode rapi dan mudah diurus.
 
-Aplikasi ini dikembangkan menggunakan **Flutter** dengan pendekatan **Clean Architecture** serta implementasi state management menggunakan **BLoC / Riverpod** (tergantung kebutuhan modul).
+2.  **Supabase (Backend):**
+    * **Apa itu?** Ini adalah "Backend" kita[cite: 285]. Supabase menyediakan database (PostgreSQL), sistem Login (Auth), penyimpanan file (Storage), dan logika sisi server (Functions)[cite: 286].
+    * **Kenapa Keren?** Kita tidak perlu membuat *server* dari nol. [cite_start]Kita menulis logika bisnis langsung di dalam Supabase menggunakan **RPC (Fungsi Database)**[cite: 286].
 
-Sistem autentikasi dan database utama berbasis **Supabase**, yang menyediakan fitur:
+3.  **Docusaurus (Website Ini):**
+    * **Apa itu?** *Tools* untuk membuat *website* dokumentasi ini dengan cepat.
 
-- Auth (login/register dengan email kampus)
-- PostgreSQL database (untuk user, roles, permission, dll)
-- Row Level Security (RLS) dan access control
+## 📖 Cara Membaca Dokumentasi
 
----
-
-## Modul Fitur
-
-Setiap fitur besar (misal: user roles, admin panel, forum, dll) memiliki struktur folder sendiri di bawah `lib/features/<fitur>` dan didokumentasikan secara modular di Docusaurus.
-
-Contoh dokumentasi ini dimulai dengan:
-
-- [`features/roles`](./roles/overview.md) → Dokumentasi lengkap sistem User Roles
-
----
-
-## Struktur Dokumentasi
-
-Setiap fitur didokumentasikan dengan format berikut:
-
-1. Overview (gambaran umum fitur)
-2. Clean Architecture & Alur Logic
-3. Struktur SQL Supabase
-4. Contoh kode implementasi
-5. FAQ dan panduan pengembangan
-
----
-
-## Tujuan Dokumentasi
-
-📌 Tujuan utama dokumentasi ini:
-
-- Mempermudah tim baru memahami fitur
-- Memberi panduan teknis untuk developer internal
-- Menjadi referensi utama jika terjadi regenerasi tim HIMTIKA
-
----
-
-## Kontribusi
-
-Jika kamu adalah developer baru atau tim yang mewarisi proyek ini:
-
-1. Baca dokumentasi per fitur terlebih dahulu.
-2. Gunakan `search` untuk temukan file yang relevan.
-3. Ikuti struktur yang sudah ada agar proyek tetap terorganisir.
-
----
-
-📌 Selanjutnya, pelajari [Overview Fitur Roles](./roles/overview.md) sebagai dasar akses dan permission aplikasi.
+Jika ini pertama kalinya Anda, silakan baca panduan di bagian **"Panduan Memulai"** secara berurutan. Mulailah dari `Persiapan Instalasi`.
