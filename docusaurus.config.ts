@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'HIMTIKA Mobile Docs',
   tagline: 'Dokumentasi Fitur dan API Internal',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/himfo_logo2.svg',
 
   // ✅ Ganti sesuai domain kamu (nanti setelah deploy ke Vercel misalnya)
   url: 'https://himtika-mobile-docs.vercel.app',
