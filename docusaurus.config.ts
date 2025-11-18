@@ -29,92 +29,98 @@ const config: Config = {
   presets: [
     [
       'classic',
-      {
+      /** @type {import('@docusaurus/preset-classic').Options} */
+      ({
         docs: {
-          sidebarPath: require.resolve('./sidebars.ts'),
-          editUrl: 'https://github.com/himtika/himtika-mobile-docs/edit/main/',
-          routeBasePath: 'docs', // Semua dokumentasi diakses lewat /docs
+          // GANTI INI
+          sidebarPath: require.resolve('./sidebars.js'), // Arahkan ke file sidebar baru kita
+          // Ganti juga 'Edit this page' URL jika Anda mau
+          editUrl: 'https://github.com/HIMTIKA-UNSIKA/himfo-docusaurus/edit/main/',
         },
         blog: {
-          showReadingTime: true,
-          routeBasePath: 'blog',
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          editUrl: 'https://github.com/himtika/himtika-mobile-docs/edit/main/blog/',
+          // Hapus blog jika tidak perlu
+          showReadingTime: false,
+          editUrl: 'https://github.com/HIMTIKA-UNSIKA/himfo-docusaurus/edit/main/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
-      } satisfies Preset.Options,
+      }),
     ],
   ],
 
   themeConfig: {
-    image: 'img/himtika-banner.png', // ✅ Ganti dengan gambar banner milikmu
+    image: 'img/himtika-banner.png',
     navbar: {
-      title: 'HIMTIKA Docs',
-      logo: {
-        alt: 'HIMTIKA Logo',
-        src: 'img/logo.svg',
+        title: 'Dokumentasi HIMFO',
+        logo: {
+          alt: 'HIMFO Logo',
+          src: 'img/himfo_logo2.svg',
+        },
+        items: [
+          {
+            type: 'docSidebar',
+            // PERBAIKAN DI SINI: Ganti 'tutorialSidebar' menjadi 'docs'
+            sidebarId: 'docs', 
+            position: 'left',
+            label: 'Dokumentasi',
+          },
+          // HAPUS LINK BLOG JIKA TIDAK PERLU
+          // {to: '/blog', label: 'Blog', position: 'left'}, 
+          {
+            href: 'https://github.com/RnD-HIMTIKA/himtika-mobile-information',
+            label: 'GitHub Proyek',
+            position: 'right',
+          },
+        ],
       },
-      items: [
-        {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Docs',
-        },
-        {
-          to: '/blog',
-          label: 'Blog',
-          position: 'left',
-        },
-        {
-          href: 'https://github.com/himtika/himtika-mobile-docs',
-          label: 'GitHub',
-          position: 'right',
-        },
-      ],
-    },
-    footer: {
-      style: 'dark',
-      links: [
-        {
-          title: 'Dokumentasi',
-          items: [
-            {
-              label: 'User Roles',
-              to: '/docs/roles/overview',
-            },
-          ],
-        },
-        {
-          title: 'Tim',
-          items: [
-            {
-              label: 'RnD HIMTIKA',
-              href: 'https://himtika-unsika.com/',
-            },
-          ],
-        },
-        {
-          title: 'Lainnya',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/himtika/himtika-mobile-docs',
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} HIMTIKA Unsika. Dibangun dengan Docusaurus.`,
-    },
+
+      // GANTI BAGIAN FOOTER
+      footer: {
+        style: 'dark',
+        links: [
+          {
+            title: 'Dokumentasi',
+            items: [
+              {
+                label: 'Pengenalan',
+                to: '/docs/introduction',
+              },
+              {
+                label: 'Panduan Memulai',
+                to: '/docs/getting-started/installation',
+              },
+            ],
+          },
+          {
+            title: 'Komunitas',
+            items: [
+              {
+                label: 'Instagram HIMTIKA',
+                href: 'https://www.instagram.com/himtika_unsika/',
+              },
+              {
+                label: 'Website HIMTIKA',
+                href: 'https://himtika.cs.unsika.ac.id',
+              },
+            ],
+          },
+          {
+            title: 'Proyek',
+            items: [
+              {
+                label: 'GitHub (HIMFO)',
+                href: 'https://github.com/RnD-HIMTIKA/himtika-mobile-information',
+              },
+              {
+                label: 'GitHub (HIMFO docs)',
+                href: 'https://github.com/RnD-HIMTIKA/himtika-mobile-docs',
+              },
+            ],
+          },
+        ],
+        copyright: `Copyright © ${new Date().getFullYear()} HIMTIKA UNSIKA. Dibangun dengan Docusaurus.`,
+      },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
